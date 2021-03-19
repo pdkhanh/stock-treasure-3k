@@ -1,0 +1,6 @@
+[
+    { "code": "FPT", "addedDate": "3/16/2021", "initPrice": 90000, "currentPrice": 2000, "currentChange": 10, "currentPerChange": 10, "change": 0, "perChange": 0
+    },
+    { "code": "TCB", "addedDate": "3/16/2021", "initPrice": 40300, "currentPrice": 2000, "currentChange": 10, "currentPerChange": 10, "change": 0, "perChange": 0
+    }
+]
