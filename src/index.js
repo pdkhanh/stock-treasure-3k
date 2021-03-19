@@ -44,6 +44,19 @@ const StyledTable = styled(ReactTable)`
       border-right: 0;
     }
   }
+
+  .remove {
+    border: 0;
+    background-color: white;
+    text-align: right;
+    font-weight: 700;
+    flex: 0 0 20px;
+    
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
 `;
 
 
@@ -123,6 +136,15 @@ class App extends React.Component {
     this.callAddStock(this.state.data);
   };
 
+  remove = (row) => {
+    // Array.prototype.filter returns new array
+    // so we aren't mutating state here
+    let data = this.state.data;
+    console.log(this.state.data[row.index]);
+    data.splice(row.index, 1)
+    this.setState({data})
+  };
+
   async initData() {
     this.state.data.forEach((e) => {
       console.log(e.code);
@@ -144,6 +166,12 @@ class App extends React.Component {
   setText = (e) => {
     this.setState({ text: e.target.value });
   };
+
+  totalProfit = () => {
+    console.log(this.state.data)
+    const totalProfit = this.state.data.reduce((a, b) => a + (parseFloat(b['perChange']) || 0), 0);
+    return totalProfit
+  }
 
   addStock = async () => {
     try {
@@ -169,7 +197,7 @@ class App extends React.Component {
         currentChange: stockData.Change,
         currentPerChange: stockData.PerChange,
         change: change,
-        perChange: (change / initPrice).toFixed(4) * 100
+        perChange: (parseInt(change) / parseInt(initPrice)).toFixed(4) * 100
       };
       console.log("aaa");
       console.log(object);
@@ -226,6 +254,22 @@ class App extends React.Component {
               }}
               data={data}
               columns={[
+                {
+                  Header: "Remove",
+                  Cell: (row)=> (
+                    <span style={{cursor:'pointer',color:'red',textDecoration:'underline'}}
+                          onClick={() => {
+                              let data = this.state.data;
+                              console.log(this.state.data[row.index]);
+                              data.splice(row.index, 1)
+                              this.setState({data})
+                              console.log(data)
+                              this.callAddStock(data)
+                            }}>
+                              Delete
+                            </span> 
+                    )
+                },
                 {
                   Header: "Code",
                   accessor: "code"
@@ -302,6 +346,7 @@ class App extends React.Component {
                 {
                   Header: "PerChange",
                   accessor: "perChange",
+                  id: "perChange",
                   Cell: (props) => <span>{props.value}%</span>,
                   getProps: (state, rowInfo) => {
                     if (rowInfo && rowInfo.row) {
@@ -312,7 +357,12 @@ class App extends React.Component {
                       };
                     }
                     return {};
-                  }
+                  },
+                  Footer: (
+                    <span style={{color:  "#0f0"}}>{
+                      data.reduce((total, { perChange }) => total += parseFloat(perChange), 0)
+                    }%</span>
+                  )
                 }
               ]}
               className="-striped -highlight"
