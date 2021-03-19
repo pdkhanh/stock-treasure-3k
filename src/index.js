@@ -142,7 +142,7 @@ class App extends React.Component {
     let data = this.state.data;
     console.log(this.state.data[row.index]);
     data.splice(row.index, 1)
-    this.setState({data})
+    this.setState({ data })
   };
 
   async initData() {
@@ -216,18 +216,37 @@ class App extends React.Component {
     const { data, isLoading } = this.state;
     return (
       <>
-        <div className="App">
+        <div
+          style={{
+            backgroundColor: "black"
+          }}
+          className="App">
           <input
+            style={{
+              backgroundColor: "black",
+              color: "#0f0",
+              width: "150px",
+              height: "27px"
+            }}
             placeholder="Code"
             id="stockCode"
             value={this.state.text}
             onChange={this.setText}
           />
-          <input placeholder="Init Price" id="inputInitPrice" type="text" />
+          <input
+            style={{
+              backgroundColor: "black",
+              color: "#0f0",
+              width: "150px",
+              height: "27px"
+            }}
+            placeholder="Init Price" id="inputInitPrice" type="text" />
           <button
             style={{
+              backgroundColor: "black",
+              color: "#0f0",
               width: "150px",
-              height: "21px"
+              height: "32px"
             }}
             type="submit"
             onClick={this.addStock}
@@ -236,9 +255,11 @@ class App extends React.Component {
           </button>
           <button
             style={{
+              backgroundColor: "black",
+              color: "#0f0",
               width: "150px",
-              height: "21px"
-            }}
+              height: "32px"
+            }}  
             type="submit"
             onClick={this.updateStock}
           >
@@ -256,19 +277,19 @@ class App extends React.Component {
               columns={[
                 {
                   Header: "Remove",
-                  Cell: (row)=> (
-                    <span style={{cursor:'pointer',color:'red',textDecoration:'underline'}}
-                          onClick={() => {
-                              let data = this.state.data;
-                              console.log(this.state.data[row.index]);
-                              data.splice(row.index, 1)
-                              this.setState({data})
-                              console.log(data)
-                              this.callAddStock(data)
-                            }}>
-                              Delete
-                            </span> 
-                    )
+                  Cell: (row) => (
+                    <span style={{ cursor: 'pointer', color: 'red', textDecoration: 'underline' }}
+                      onClick={() => {
+                        let data = this.state.data;
+                        console.log(this.state.data[row.index]);
+                        data.splice(row.index, 1)
+                        this.setState({ data })
+                        console.log(data)
+                        this.callAddStock(data)
+                      }}>
+                      Delete
+                    </span>
+                  )
                 },
                 {
                   Header: "Code",
@@ -359,7 +380,7 @@ class App extends React.Component {
                     return {};
                   },
                   Footer: (
-                    <span style={{color:  "#0f0"}}>{
+                    <span style={{ color: "#0f0" }}>{
                       data.reduce((total, { perChange }) => total += parseFloat(perChange), 0)
                     }%</span>
                   )
