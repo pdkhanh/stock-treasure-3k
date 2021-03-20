@@ -1,64 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import styled from "styled-components";
-
 import "./styles.css";
 
-// Import React Table
-import ReactTable from "react-table";
+import { StyledTable} from "./StyledTable"
+
 import "react-table/react-table.css";
 //import Spinner from 'react-bootstrap/Spinner'
-
-const StyledTable = styled(ReactTable)`
-  padding: 1rem;
-  .rt-td {
-    margin: 0;
-    padding: 0.5rem;
-    border-bottom: 1px solid #333;
-    border-top: 1px solid #333;
-    border-right: 1px solid #333 !important;
-    border-left: 1px solid #333 !important;
-    color: white
-
-    :last-child {
-      border-right: 0;
-    }
-  }
-
-  .rt-noData {
-    visibility: hidden;
-  }
-
-  .rt-noData:after {
-    content: 'goodbye';
-  }
-
-  .rt-th {
-    border-bottom: 1px solid #333;
-    border-top: 1px solid #333;
-    border-right: 1px solid #333 !important;
-    border-left: 1px solid #333 !important;
-    color: white
-
-    :last-child {
-      border-right: 0;
-    }
-  }
-
-  .remove {
-    border: 0;
-    background-color: white;
-    text-align: right;
-    font-weight: 700;
-    flex: 0 0 20px;
-    
-    a {
-      text-decoration: none;
-      color: black;
-    }
-  }
-`;
-
 
 
 const URL = "https://mata-api.herokuapp.com";
@@ -115,7 +62,6 @@ class App extends React.Component {
 
   renderEditable = (cellInfo) => {
     const cellValue = this.state.data[cellInfo.index][cellInfo.column.id];
-
     return (
       <input
         placeholder="type here"
