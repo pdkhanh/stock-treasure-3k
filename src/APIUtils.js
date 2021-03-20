@@ -1,6 +1,6 @@
 export class APIUtils {
 
-  static URL = "http://localhost:3033";
+  static URL = "https://mata-api.herokuapp.com";
 
   static async getInitStockData() {
     const response = await fetch(`${this.URL}/treasure/getData`);
