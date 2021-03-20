@@ -1,61 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
-
-import { StyledTable} from "./StyledTable"
+import { StyledTable } from "./style/StyledTable"
 
 import "react-table/react-table.css";
+import { APIUtils } from "./APIUtils";
 //import Spinner from 'react-bootstrap/Spinner'
 
-
-const URL = "https://mata-api.herokuapp.com";
 
 class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      text: "",
       data: [],
       isLoading: true,
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    //this.initData();
-  }
-
   async componentDidMount(prevProps, prevState) {
-    this.state.data = await this.getInitStockData();
-    await this.initData();
-  }
-
-  async getInitStockData() {
-    const response = await fetch(`${URL}/treasure/getData`);
-    return response.json();
-  }
-
-  async callStockApi(code) {
-    const response = await fetch(`${URL}/treasure?code=${code}`);
-    return response.json();
-  }
-
-  async callAddStock(data) {
-    await fetch(`${URL}/treasure`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-    this.initData();
+    this.state.data = await APIUtils.getInitStockData();
+    this.setState({ data: this.state.data });
   }
 
   handleInputChange = (cellInfo, event) => {
     let data = [...this.state.data];
     console.log(event.target.value);
-    data[cellInfo.index][cellInfo.column.id] = event.target.value;
+    data[cellInfo.index][cellInfo.column.id] = parseInt(event.target.value);
 
     this.setState({ data });
   };
@@ -64,7 +35,7 @@ class App extends React.Component {
     const cellValue = this.state.data[cellInfo.index][cellInfo.column.id];
     return (
       <input
-        placeholder="type here"
+        placeholder="Type here"
         name="input"
         type="text"
         style={{
@@ -72,91 +43,27 @@ class App extends React.Component {
           backgroundColor: "black"
         }}
         onChange={this.handleInputChange.bind(null, cellInfo)}
-        value={cellValue}
+        value={parseInt(cellValue)}
       />
     );
   };
 
-  updateStock = () => {
-    console.log(this.state.data);
-    this.callAddStock(this.state.data);
+  updateStock = async () => {
+    var response = await APIUtils.updateStock(this.state.data);
+    this.setState({ data: response });
   };
-
-  remove = (row) => {
-    // Array.prototype.filter returns new array
-    // so we aren't mutating state here
-    let data = this.state.data;
-    console.log(this.state.data[row.index]);
-    data.splice(row.index, 1)
-    this.setState({ data })
-  };
-
-  async initData() {
-    this.state.data.forEach((e) => {
-      console.log(e.code);
-      var index = this.state.data.findIndex((obj) => obj.code === e.code);
-      this.callStockApi(e.code).then((data) => {
-        this.state.data[index].currentPrice = data.Price;
-        this.state.data[index].currentChange = data.Change;
-        this.state.data[index].currentPerChange = data.PerChange;
-        this.state.data[index].change =
-          data.Price - this.state.data[index].initPrice;
-        this.state.data[index].perChange = ((this.state.data[index].change / parseInt(this.state.data[index].initPrice)) * 100).toFixed(2);
-        console.log(this.state.data[index].perChange);
-        this.setState({ data: this.state.data });
-        this.setState({ loading: false });
-      });
-    });
-  }
-
-  setText = (e) => {
-    this.setState({ text: e.target.value });
-  };
-
-  totalProfit = () => {
-    console.log(this.state.data)
-    const totalProfit = this.state.data.reduce((a, b) => a + (parseFloat(b['perChange']) || 0), 0);
-    return totalProfit
-  }
 
   addStock = async () => {
-    try {
-      var elStockCode = document.getElementById("stockCode");
-      var elInputInitPrice = document.getElementById("inputInitPrice");
-      var stockCode = elStockCode.value;
-      if (stockCode === "") {
-        elStockCode.focus();
-        return;
-      }
-      var stockData = await this.callStockApi(stockCode);
-      console.log(stockData);
-      var inputInitPrice = elInputInitPrice.value;
-      var initPrice =
-        elInputInitPrice.value === "" ? stockData.Price : inputInitPrice;
-      var change = stockData.Price - initPrice;
-
-      var object = {
-        code: stockCode,
-        addedDate: new Date().toLocaleDateString(),
-        initPrice: parseInt(initPrice),
-        currentPrice: stockData.Price,
-        currentChange: stockData.Change,
-        currentPerChange: stockData.PerChange,
-        change: change,
-        perChange: (parseInt(change) / parseInt(initPrice)).toFixed(4) * 100
-      };
-      console.log("aaa");
-      console.log(object);
-      this.state.data.push(object);
-      this.setState({ data: this.state.data });
-      await this.callAddStock(this.state.data);
-
-      elStockCode.value = "";
-      elInputInitPrice.value = "";
-    } catch (err) {
-      console.log(err);
+    var stockData = {
+      code: document.getElementById("stockCode").value,
+      initPrice: document.getElementById("inputInitPrice").value === "" ? 0 : document.getElementById("inputInitPrice").value,
+      addedDate: new Date().toLocaleDateString()
     }
-  };
+
+    var response = await APIUtils.addStock(stockData)
+    this.state.data.push(response)
+    this.setState({ data: this.state.data });
+  }
 
   render() {
     const { data, isLoading } = this.state;
@@ -167,17 +74,14 @@ class App extends React.Component {
             backgroundColor: "black"
           }}
           className="App">
-          <input
-            style={{
-              backgroundColor: "black",
-              color: "#0f0",
-              width: "150px",
-              height: "27px"
-            }}
+          <input style={{
+            background: "black",
+            color: "#0f0",
+            width: "150px",
+            height: "27px",
+          }}
             placeholder="Code"
             id="stockCode"
-            value={this.state.text}
-            onChange={this.setText}
           />
           <input
             style={{
@@ -205,7 +109,7 @@ class App extends React.Component {
               color: "#0f0",
               width: "150px",
               height: "32px"
-            }}  
+            }}
             type="submit"
             onClick={this.updateStock}
           >
@@ -222,16 +126,14 @@ class App extends React.Component {
               data={data}
               columns={[
                 {
-                  Header: "Remove",
+                  Header: "Delete",
                   Cell: (row) => (
                     <span style={{ cursor: 'pointer', color: 'red', textDecoration: 'underline' }}
                       onClick={() => {
                         let data = this.state.data;
-                        console.log(this.state.data[row.index]);
+                        APIUtils.deleteStock(this.state.data[row.index].code)
                         data.splice(row.index, 1)
                         this.setState({ data })
-                        console.log(data)
-                        this.callAddStock(data)
                       }}>
                       Delete
                     </span>
@@ -327,7 +229,7 @@ class App extends React.Component {
                   },
                   Footer: (
                     <span style={{ color: "#0f0" }}>{
-                      data.reduce((total, { perChange }) => total += parseFloat(perChange), 0)
+                      data.reduce((total, { perChange }) => total += perChange, 0)
                     }%</span>
                   )
                 }

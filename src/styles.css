@@ -12,3 +12,10 @@
   width: "100px" !important;
   height: "30px" !important;
 }
+
+.stock {
+    background: "black";
+    color: "#0f0";
+    width: "999px";
+    height: "27px";
+}
