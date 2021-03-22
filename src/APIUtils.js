@@ -1,6 +1,7 @@
 export class APIUtils {
 
   static URL = "https://mata-api.herokuapp.com";
+  //static URL = "http://localhost:3033";
 
   static async getInitStockData() {
     const response = await fetch(`${this.URL}/treasure/getData`);
@@ -37,7 +38,7 @@ export class APIUtils {
   }
 
   static async addStock(data) {
-    const response = await fetch(`${this.URL}/treasure`, {
+    const response = await fetch(`${this.URL}/treasure/addData`, {
       method: "POST",
       headers: {
         Accept: "application/json",

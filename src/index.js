@@ -7,7 +7,6 @@ import "react-table/react-table.css";
 import { APIUtils } from "./APIUtils";
 //import Spinner from 'react-bootstrap/Spinner'
 
-
 class App extends React.Component {
   constructor() {
     super();
@@ -48,6 +47,12 @@ class App extends React.Component {
     );
   };
 
+  handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      this.addStock();
+    }
+  }
+
   updateStock = async () => {
     var response = await APIUtils.updateStock(this.state.data);
     this.setState({ data: response });
@@ -64,6 +69,8 @@ class App extends React.Component {
     this.state.data.push(response)
     this.setState({ data: this.state.data });
   }
+
+
 
   render() {
     const { data, isLoading } = this.state;
@@ -82,7 +89,9 @@ class App extends React.Component {
           }}
             placeholder="Code"
             id="stockCode"
-          />
+            onInput={(e) => e.target.value = ("" + e.target.value).toUpperCase()}
+            onKeyPress= {this.handleKeyPress}
+            />
           <input
             style={{
               backgroundColor: "black",
@@ -90,7 +99,9 @@ class App extends React.Component {
               width: "150px",
               height: "27px"
             }}
-            placeholder="Init Price" id="inputInitPrice" type="text" />
+            onKeyPress= {this.handleKeyPress}
+            placeholder="Init Price" id="inputInitPrice" type="text" 
+            />
           <button
             style={{
               backgroundColor: "black",
@@ -127,8 +138,9 @@ class App extends React.Component {
               columns={[
                 {
                   Header: "Delete",
+                  width: 70,
                   Cell: (row) => (
-                    <span style={{ cursor: 'pointer', color: 'red', textDecoration: 'underline' }}
+                    <span style={{ cursor: 'pointer', color: 'red', textDecoration: 'underline', 'text-align': 'center' }}
                       onClick={() => {
                         let data = this.state.data;
                         APIUtils.deleteStock(this.state.data[row.index].code)
@@ -141,11 +153,13 @@ class App extends React.Component {
                 },
                 {
                   Header: "Code",
-                  accessor: "code"
+                  accessor: "code",
+                  style: { 'text-align': 'center' }
                 },
                 {
                   Header: "Added Date",
-                  accessor: "addedDate"
+                  accessor: "addedDate",
+                  style: { 'text-align': 'center' }
                 },
                 {
                   Header: "Init Price",
@@ -160,7 +174,8 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737"
+                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                          'text-align': 'center'
                         }
                       };
                     }
@@ -175,7 +190,8 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737"
+                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                          'text-align': 'center'
                         }
                       };
                     }
@@ -191,7 +207,8 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737"
+                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                          'text-align': 'center'
                         }
                       };
                     }
@@ -205,7 +222,8 @@ class App extends React.Component {
                     if (rowInfo && rowInfo.row) {
                       return {
                         style: {
-                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737"
+                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737",
+                          'text-align': 'center'
                         }
                       };
                     }
@@ -221,7 +239,8 @@ class App extends React.Component {
                     if (rowInfo && rowInfo.row) {
                       return {
                         style: {
-                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737"
+                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737",
+                          'text-align': 'center'
                         }
                       };
                     }
