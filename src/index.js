@@ -24,8 +24,16 @@ class App extends React.Component {
 
   handleInputChange = (cellInfo, event) => {
     let data = [...this.state.data];
-    console.log(event.target.value);
-    data[cellInfo.index][cellInfo.column.id] = parseInt(event.target.value);
+    data[cellInfo.index][cellInfo.column.id] = +event.target.value;
+    console.log(cellInfo.column.id)
+    var currentPrice = data[cellInfo.index]['currentPrice']
+    var change = currentPrice - +event.target.value
+    var perChange = ((change/currentPrice)*100).toFixed(2);
+    console.log(change)
+    console.log(perChange)
+
+    data[cellInfo.index]['change'] = change
+    data[cellInfo.index]['perChange'] = parseFloat(perChange)
 
     this.setState({ data });
   };
@@ -43,9 +51,16 @@ class App extends React.Component {
         }}
         onChange={this.handleInputChange.bind(null, cellInfo)}
         value={parseInt(cellValue)}
+        onKeyPress={this.handleEditInitPriceKeyPress}
       />
     );
   };
+
+  handleEditInitPriceKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      this.updateStock();
+    }
+  }
 
   handleKeyPress = (event) => {
     if(event.key === 'Enter'){
@@ -137,7 +152,7 @@ class App extends React.Component {
               data={data}
               columns={[
                 {
-                  Header: "Delete",
+                  Header: "",
                   width: 70,
                   Cell: (row) => (
                     <span style={{ cursor: 'pointer', color: 'red', textDecoration: 'underline', 'text-align': 'center' }}
@@ -190,7 +205,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                          rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange >= 0 ? "#0f0" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -207,7 +222,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                            rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange >= 0 ? "#0f0" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -248,7 +263,7 @@ class App extends React.Component {
                   },
                   Footer: (
                     <span style={{ color: "#0f0" }}>{
-                      data.reduce((total, { perChange }) => total += perChange, 0)
+                      (data.reduce((total, { perChange }) => total += perChange, 0)).toFixed(2)
                     }%</span>
                   )
                 }
