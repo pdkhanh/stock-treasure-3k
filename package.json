@@ -8,7 +8,7 @@
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-scripts": "3.0.1",
-    "react-table": "*",
+    "react-table": "6.7.0-alpha-0",
     "request": "^2.88.2",
     "styled-components": "^4.3.2",
     "react-bootstrap": "*"
