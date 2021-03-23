@@ -27,7 +27,7 @@ class App extends React.Component {
     data[cellInfo.index][cellInfo.column.id] = +event.target.value;
     var currentPrice = data[cellInfo.index]['currentPrice']
     var change = currentPrice - +event.target.value
-    var perChange = ((change/currentPrice)*100).toFixed(2);
+    var perChange = ((change / currentPrice) * 100).toFixed(2);
 
     data[cellInfo.index]['change'] = change
     data[cellInfo.index]['perChange'] = parseFloat(perChange)
@@ -54,15 +54,15 @@ class App extends React.Component {
   };
 
   handleEditInitPriceKeyPress = (event) => {
-    if(event.key === 'Enter'){
+    if (event.key === 'Enter') {
       this.updateStock();
     }
   }
 
   handleKeyPress = async (event) => {
-    if(event.key === 'Enter'){
+    if (event.key === 'Enter') {
       const result = await this.addStock();
-      if(result){
+      if (result) {
         document.getElementById("stockCode").value = ""
         document.getElementById("inputInitPrice").value = ""
       }
@@ -82,7 +82,7 @@ class App extends React.Component {
     }
 
     var response = await APIUtils.addStock(stockData)
-    if(response.message !== undefined) {
+    if (response.message !== undefined) {
       alert(response.message);
       return false
     }
@@ -111,8 +111,8 @@ class App extends React.Component {
             placeholder="Code"
             id="stockCode"
             onInput={(e) => e.target.value = ("" + e.target.value).toUpperCase()}
-            onKeyPress= {this.handleKeyPress}
-            />
+            onKeyPress={this.handleKeyPress}
+          />
           <input
             style={{
               backgroundColor: "black",
@@ -120,9 +120,9 @@ class App extends React.Component {
               width: "150px",
               height: "27px"
             }}
-            onKeyPress= {this.handleKeyPress}
-            placeholder="Init Price" id="inputInitPrice" type="text" 
-            />
+            onKeyPress={this.handleKeyPress}
+            placeholder="Init Price" id="inputInitPrice" type="text"
+          />
           <button
             style={{
               backgroundColor: "black",
@@ -195,7 +195,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentChange >= 0 ? "#0f0" : "#ff3737",
+                            rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange > 0 ? "#0f0" : rowInfo.row.currentPerChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -211,7 +211,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                          rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange >= 0 ? "#0f0" : "#ff3737",
+                            rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange > 0 ? "#0f0" : rowInfo.row.currentPerChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -228,7 +228,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                            rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange >= 0 ? "#0f0" : "#ff3737",
+                            rowInfo.row.currentPerChange >= 6.9 ? "#ff25ff" : rowInfo.row.currentPerChange > 0 ? "#0f0" : rowInfo.row.currentPerChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -243,7 +243,8 @@ class App extends React.Component {
                     if (rowInfo && rowInfo.row) {
                       return {
                         style: {
-                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737",
+                          color:
+                          rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -260,7 +261,8 @@ class App extends React.Component {
                     if (rowInfo && rowInfo.row) {
                       return {
                         style: {
-                          color: rowInfo.row.change >= 0 ? "#0f0" : "#ff3737",
+                          color: 
+                          rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
