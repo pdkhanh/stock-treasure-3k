@@ -25,12 +25,9 @@ class App extends React.Component {
   handleInputChange = (cellInfo, event) => {
     let data = [...this.state.data];
     data[cellInfo.index][cellInfo.column.id] = +event.target.value;
-    console.log(cellInfo.column.id)
     var currentPrice = data[cellInfo.index]['currentPrice']
     var change = currentPrice - +event.target.value
     var perChange = ((change/currentPrice)*100).toFixed(2);
-    console.log(change)
-    console.log(perChange)
 
     data[cellInfo.index]['change'] = change
     data[cellInfo.index]['perChange'] = parseFloat(perChange)
@@ -62,9 +59,13 @@ class App extends React.Component {
     }
   }
 
-  handleKeyPress = (event) => {
+  handleKeyPress = async (event) => {
     if(event.key === 'Enter'){
-      this.addStock();
+      const result = await this.addStock();
+      if(result){
+        document.getElementById("stockCode").value = ""
+        document.getElementById("inputInitPrice").value = ""
+      }
     }
   }
 
@@ -81,8 +82,13 @@ class App extends React.Component {
     }
 
     var response = await APIUtils.addStock(stockData)
+    if(response.message !== undefined) {
+      alert(response.message);
+      return false
+    }
     this.state.data.push(response)
     this.setState({ data: this.state.data });
+    return true
   }
 
 
