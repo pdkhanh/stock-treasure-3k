@@ -27,7 +27,7 @@ class App extends React.Component {
     data[cellInfo.index][cellInfo.column.id] = +event.target.value;
     var currentPrice = data[cellInfo.index]['currentPrice']
     var change = currentPrice - +event.target.value
-    var perChange = ((change / currentPrice) * 100).toFixed(2);
+    var perChange = ((change / +event.target.value) * 100).toFixed(2);
 
     data[cellInfo.index]['change'] = change
     data[cellInfo.index]['perChange'] = parseFloat(perChange)
