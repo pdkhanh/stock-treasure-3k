@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
-import { StyledTable } from "./style/StyledTable"
+import StyledTable from "./style/StyledTable"
+import Spinner from 'react-bootstrap/Spinner'
 
 import "react-table/react-table.css";
 import { APIUtils } from "./APIUtils";
-//import Spinner from 'react-bootstrap/Spinner'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
   constructor() {
@@ -13,13 +14,20 @@ class App extends React.Component {
 
     this.state = {
       data: [],
-      isLoading: true,
+      isLoading: false,
     };
   }
 
   async componentDidMount(prevProps, prevState) {
+    this.setState({
+      ...this.state,
+      isLoading: true
+    })
     this.state.data = await APIUtils.getInitStockData();
-    this.setState({ data: this.state.data });
+    this.setState({
+      data: this.state.data,
+      isLoading: false
+    });
   }
 
   handleInputChange = (cellInfo, event) => {
@@ -27,7 +35,7 @@ class App extends React.Component {
     data[cellInfo.index][cellInfo.column.id] = +event.target.value;
     var currentPrice = data[cellInfo.index]['currentPrice']
     var change = currentPrice - +event.target.value
-    var perChange = ((change / +event.target.value) * 100).toFixed(2);
+    var perChange = ((change / currentPrice) * 100).toFixed(2);
 
     data[cellInfo.index]['change'] = change
     data[cellInfo.index]['perChange'] = parseFloat(perChange)
@@ -70,8 +78,15 @@ class App extends React.Component {
   }
 
   updateStock = async () => {
+    this.setState({
+      ...this.state,
+      isLoading: true
+    })
     var response = await APIUtils.updateStock(this.state.data);
-    this.setState({ data: response });
+    this.setState({
+      data: response,
+      isLoading: true
+    });
   };
 
   addStock = async () => {
@@ -81,13 +96,24 @@ class App extends React.Component {
       addedDate: new Date().toLocaleDateString()
     }
 
+    this.setState({
+      ...this.state,
+      isLoading: true
+    })
     var response = await APIUtils.addStock(stockData)
     if (response.message !== undefined) {
+      this.setState({
+        ...this.state,
+        isLoading: false
+      })
       alert(response.message);
       return false
     }
     this.state.data.push(response)
-    this.setState({ data: this.state.data });
+    this.setState({
+      data: this.state.data,
+      isLoading: false
+    });
     return true
   }
 
@@ -96,7 +122,10 @@ class App extends React.Component {
   render() {
     const { data, isLoading } = this.state;
     return (
-      <>
+      <div 
+        style={{
+        backgroundColor: "black"
+      }}>
         <div
           style={{
             backgroundColor: "black"
@@ -148,7 +177,10 @@ class App extends React.Component {
             Update
           </button>
         </div>
-        {
+        <div>test: { isLoading }</div>
+        { isLoading ? <div style={{
+              textAlign: "center"
+            }}><Spinner as="span" animation="border" variant="light"></Spinner></div> :
           <div>
             <StyledTable
               style={{
@@ -270,7 +302,7 @@ class App extends React.Component {
                     return {};
                   },
                   Footer: (
-                    <span style={{ color: "#0f0" }}>{
+                    <span style={{ color: (data.reduce((total, { perChange }) => total += perChange, 0)).toFixed(2) > 0 ? "#0f0" : "#ff3737" }}>{
                       (data.reduce((total, { perChange }) => total += perChange, 0)).toFixed(2)
                     }%</span>
                   )
@@ -280,7 +312,7 @@ class App extends React.Component {
             />
           </div>
         }
-      </>
+      </div>
     );
   }
 }

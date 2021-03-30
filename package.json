@@ -5,13 +5,15 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "bootstrap": "^4.6.0",
     "react": "16.8.6",
+    "react-bootstrap": "^1.5.2",
     "react-dom": "16.8.6",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.0.1",
     "react-table": "6.7.0-alpha-0",
     "request": "^2.88.2",
-    "styled-components": "^4.3.2",
-    "react-bootstrap": "*"
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "typescript": "3.3.3"

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ReactTable from "react-table";
 
-export const StyledTable = styled(ReactTable)`
+export default styled(ReactTable)`
 padding: 1rem;
 .rt-td {
   margin: 0;
