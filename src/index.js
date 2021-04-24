@@ -5,7 +5,7 @@ import { StyledTable } from "./style/StyledTable"
 
 import "react-table/react-table.css";
 import { APIUtils } from "./APIUtils";
-//import Spinner from 'react-bootstrap/Spinner'
+import Loader from "react-loader-spinner";
 
 class App extends React.Component {
   constructor() {
@@ -20,6 +20,7 @@ class App extends React.Component {
   async componentDidMount(prevProps, prevState) {
     this.state.data = await APIUtils.getInitStockData();
     this.setState({ data: this.state.data });
+    this.setState({ isLoading: "none" });
   }
 
   handleInputChange = (cellInfo, event) => {
@@ -31,6 +32,13 @@ class App extends React.Component {
 
     data[cellInfo.index]['change'] = change
     data[cellInfo.index]['perChange'] = parseFloat(perChange)
+
+    this.setState({ data });
+  };
+
+  handleNoteChange = (cellInfo, event) => {
+    let data = [...this.state.data];
+    data[cellInfo.index][cellInfo.column.id] = event.target.value;
 
     this.setState({ data });
   };
@@ -53,6 +61,25 @@ class App extends React.Component {
     );
   };
 
+  renderEditableNote = (cellInfo) => {
+    const cellValue = this.state.data[cellInfo.index][cellInfo.column.id];
+    return (
+      <input
+        placeholder="Note here"
+        name="input"
+        type="text"
+        autoComplete="off"
+        style={{
+          color: "white",
+          backgroundColor: "black"
+        }}
+        onChange={this.handleNoteChange.bind(null, cellInfo)}
+        value={cellValue}
+        onKeyPress={this.handleEditInitPriceKeyPress}
+      />
+    );
+  };
+
   handleEditInitPriceKeyPress = (event) => {
     if (event.key === 'Enter') {
       this.updateStock();
@@ -70,11 +97,14 @@ class App extends React.Component {
   }
 
   updateStock = async () => {
+    this.setState({ isLoading: "block" })
     var response = await APIUtils.updateStock(this.state.data);
     this.setState({ data: response });
+    this.setState({ isLoading: "none" })
   };
 
   addStock = async () => {
+    this.setState({ isLoading: "block" })
     var stockData = {
       code: document.getElementById("stockCode").value,
       initPrice: document.getElementById("inputInitPrice").value === "" ? 0 : document.getElementById("inputInitPrice").value,
@@ -84,14 +114,14 @@ class App extends React.Component {
     var response = await APIUtils.addStock(stockData)
     if (response.message !== undefined) {
       alert(response.message);
+      this.setState({ isLoading: "none" })
       return false
     }
     this.state.data.push(response)
     this.setState({ data: this.state.data });
+    this.setState({ isLoading: "none" })
     return true
   }
-
-
 
   render() {
     const { data, isLoading } = this.state;
@@ -149,11 +179,15 @@ class App extends React.Component {
           </button>
         </div>
         {
-          <div>
+          <div style={{
+            position: "relative",
+          }}>
             <StyledTable
               style={{
                 backgroundColor: "black",
-                color: "white"
+                color: "white",
+                position: "absolute",
+                width: "100%",
               }}
               data={data}
               columns={[
@@ -174,13 +208,20 @@ class App extends React.Component {
                 },
                 {
                   Header: "Code",
+                  width: 70,
                   accessor: "code",
                   style: { 'text-align': 'center' }
                 },
                 {
+                  width: 100,
                   Header: "Added Date",
                   accessor: "addedDate",
                   style: { 'text-align': 'center' }
+                },
+                {
+                  Header: "Note",
+                  accessor: "note",
+                  Cell: this.renderEditableNote
                 },
                 {
                   Header: "Init Price",
@@ -244,7 +285,7 @@ class App extends React.Component {
                       return {
                         style: {
                           color:
-                          rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
+                            rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -261,8 +302,8 @@ class App extends React.Component {
                     if (rowInfo && rowInfo.row) {
                       return {
                         style: {
-                          color: 
-                          rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
+                          color:
+                            rowInfo.row.perChange >= 30 ? "#ff25ff" : rowInfo.row.perChange > 0 ? "#0f0" : rowInfo.row.perChange === 0 ? "#ffd900" : "#ff3737",
                           'text-align': 'center'
                         }
                       };
@@ -277,6 +318,17 @@ class App extends React.Component {
                 }
               ]}
               className="-striped -highlight"
+            />
+            <Loader style={{
+              position: "fixed",
+              display: isLoading,
+              "top": "40%",
+              "left": "50%",
+              "margin-top": "-100px",
+              "margin-left": "-100px",
+            }}
+              type="BallTriangle"
+              color="#0f0"
             />
           </div>
         }
