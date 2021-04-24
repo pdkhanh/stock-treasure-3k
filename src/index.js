@@ -222,11 +222,13 @@ class App extends React.Component {
                 },
                 {
                   Header: "Note",
+                  width: 350,
                   accessor: "note",
                   Cell: this.renderEditableNote
                 },
                 {
                   Header: "Init Price",
+                  width: 90,
                   accessor: "initPrice",
                   Cell: this.renderEditable
                 },
@@ -329,8 +331,9 @@ class App extends React.Component {
               "margin-top": "-100px",
               "margin-left": "-100px",
             }}
-              type="BallTriangle"
+              type="MutatingDots"
               color="#0f0"
+              secondaryColor="#ff25ff"
             />
           </div>
         }
