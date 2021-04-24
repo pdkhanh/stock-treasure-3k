@@ -33,11 +33,7 @@ padding: 1rem;
 }
 
 .rt-noData {
-  visibility: none;
-}
-
-.rt-noData:after {
-  content: "links";
+  visibility: hidden;
 }
 
 .rt-th {

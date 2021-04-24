@@ -11,7 +11,8 @@
     "react-table": "6.7.0-alpha-0",
     "request": "^2.88.2",
     "styled-components": "^4.3.2",
-    "react-bootstrap": "*"
+    "react-bootstrap": "*",
+    "react-loader-spinner": "4.0.0"
   },
   "devDependencies": {
     "typescript": "3.3.3"
