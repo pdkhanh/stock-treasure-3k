@@ -52,7 +52,8 @@ class App extends React.Component {
         type="text"
         style={{
           color: "white",
-          backgroundColor: "black"
+          backgroundColor: "black",
+          width: "100%"
         }}
         onChange={this.handleInputChange.bind(null, cellInfo)}
         value={parseInt(cellValue)}
@@ -71,7 +72,8 @@ class App extends React.Component {
         autoComplete="off"
         style={{
           color: "white",
-          backgroundColor: "black"
+          backgroundColor: "black",
+          width: "100%"
         }}
         onChange={this.handleNoteChange.bind(null, cellInfo)}
         value={cellValue}
